@@ -1,0 +1,51 @@
+﻿<Window x:Class="AutoList.Client.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="clr-namespace:AutoList.Control;assembly=AutoList.Control"
+        Title="MainWindow" Height="550" Width="800">
+    <Grid>
+        <StackPanel Orientation="Vertical" Margin="4">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Filter by name " Margin="4"/>
+                <TextBox MinWidth="100" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            
+            <control:AutoListControl ItemsSource="{Binding Items}" 
+                              SelectedItems="{Binding SelectedItems}" 
+                              SelectionMode="Multiple"  
+                              IsBusy="{Binding IsBusy}" 
+                              AllowsColumnHide="{Binding ElementName=enableColumnHide, Path=IsChecked}"
+                              AllowExcelExport="{Binding ElementName=enableExcelExport, Path=IsChecked}"
+                              AllowsColumnReorder="{Binding ElementName=enableColumnReorder, Path=IsChecked}"
+                              Margin="4" MinHeight="200"                              
+                              OnGenerated="{Binding Generated}"
+                              FocusedItem="{Binding FocusedItem, Mode=TwoWay}"
+                              OnItemDoubleClick="{Binding OnItemDoubleClicked}"
+                              FilterPredicate="{Binding FilterPredicate}"
+                              GroupByExpression="{Binding GroupByPredicate}"
+                              AutoColumnSize="{Binding ElementName=enableColumnReresize, Path=IsChecked}"                              
+                              />
+            <control:AutoListControl ItemsSource="{Binding SelectedItems}" Margin="4" MinHeight="100"/>                                    
+            
+            <StackPanel Orientation="Horizontal" >
+                <Button Content="Add items" Command="{Binding AddItemsCommand}" Margin="4"/>
+                <Button Content="Change headers" Command="{Binding ChangeHeaderCommand}" Margin="4"/>
+                <Button Content="Toggle selection" Command="{Binding ToggleSelectionCommand}" Margin="4"/>                
+            </StackPanel>            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Group by" Margin="4"/>
+                <ComboBox ItemsSource="{Binding GroupByProperties}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding GroupByPredicate, Mode=TwoWay}" Margin="4"/>                
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Focused item" Margin="4"/>
+                <ComboBox ItemsSource="{Binding Items}" DisplayMemberPath="Name" SelectedItem="{Binding FocusedItem, Mode=TwoWay}"  Margin="4"/>
+            </StackPanel>
+            <UniformGrid Columns="2" Rows="2">
+                <CheckBox x:Name="enableColumnHide" Margin="4" Content="Enable context menu in main list"/>
+                <CheckBox x:Name="enableExcelExport" Margin="4" Content="Enable excel export" />
+                <CheckBox x:Name="enableColumnReresize" Margin="4" Content="Enable autosize" />
+                <CheckBox x:Name="enableColumnReorder" Margin="4" Content="Enable reorder" />
+            </UniformGrid>
+        </StackPanel>
+    </Grid>        
+</Window>

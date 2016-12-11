@@ -1,0 +1,93 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:behaviors="clr-namespace:AutoList.Control.Behaviors"
+                    >
+
+    <ControlTemplate x:Key="PART_ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
+        <Path 
+			Name="Chevron"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Data="M 0 0 L 0 8 L 8 4 Z"
+            Fill="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}"
+            />
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <Setter TargetName="Chevron" Property="Data" Value="M 0 0 L 4 8 L 8 0 Z" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="PART_Expander" TargetType="{x:Type Expander}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Expander}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0">
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="14" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter 
+                                        Grid.Column="1"                                        
+                                        ContentSource="Header"                                         
+                                        Margin="4" 
+                                        />
+                                <ToggleButton 
+                                        Grid.Column="0"
+                                        Margin="2" 
+                                        IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                        OverridesDefaultStyle="True" 
+                                        Template="{StaticResource PART_ExpanderToggleButton}"                                         
+                                        />
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1">
+                            <ContentPresenter Margin="4" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content, Path=DesiredHeight}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type GroupItem}" x:Key="DefaultStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <VirtualizingStackPanel>
+                        <Expander Style="{StaticResource PART_Expander}" >
+                            <i:Interaction.Behaviors>
+                                <behaviors:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
+                            </i:Interaction.Behaviors>
+                            <Expander.Header>
+                                <DockPanel>
+                                    <TextBlock Text="{Binding Path=Name}" Margin="0,0,8,0"/>
+                                    <!--<TextBlock FontWeight="Bold" Text="{Binding Path=ItemCount}" Margin="8,0,0,0"/>-->
+                                </DockPanel>
+                            </Expander.Header>
+                            <Expander.Content>
+                                <ItemsPresenter />  
+                            </Expander.Content>
+                        </Expander>
+                    </VirtualizingStackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
